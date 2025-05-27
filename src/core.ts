@@ -89,9 +89,6 @@ export function initState() {
       parameters: {},
       requestBodies: {},
       responses: {
-        '200': {
-          description: 'Successful',
-        },
         '204': {
           description: 'The response body is empty',
         },
@@ -112,15 +109,13 @@ export function initState() {
   adminApiTags.length = 0
   Object.assign(
     commonOperationResponse,
-    Object.keys(oas.components.responses)
-      .filter((status) => !['200', '204'].includes(status))
-      .reduce(
-        (obj, status) => ({
-          ...obj,
-          [status]: { $ref: `#/components/responses/${status}` },
-        }),
-        {},
-      ),
+    Object.keys(oas.components.responses).reduce(
+      (obj, status) => ({
+        ...obj,
+        [status]: { $ref: `#/components/responses/${status}` },
+      }),
+      {},
+    ),
   )
 }
 
