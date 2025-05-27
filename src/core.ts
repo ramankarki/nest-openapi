@@ -67,7 +67,9 @@ const endpointDecorators: HttpMethod[] = [
 ]
 
 /** will be loaded inside main */
-const userConfig: Config = {}
+const userConfig: Config = {
+  glob: ['!src/**/*.spec.ts', '!src/**/*.e2e-spec.ts', 'src/**/*.ts'],
+}
 const oas: Partial<OpenAPIV3.Document> = {}
 const commonOperationResponse: OpenAPIV3.ResponsesObject = {}
 
@@ -499,14 +501,11 @@ export function saveOAS(path: string) {
 }
 
 export function loadConfig() {
-  const defaultConfig: Config = {
-    glob: ['!src/**/*.spec.ts', '!src/**/*.e2e-spec.ts', 'src/**/*.ts'],
-  }
   const configPath = resolve(process.cwd(), 'nest-openapi.config.ts')
   try {
     const { default: config } = require(configPath) as { default: Config }
     if (!config) throw new Error('Config must have const export')
-    Object.assign(defaultConfig, config)
+    Object.assign(userConfig, config)
 
     if (config.extends?.info) oas.info = config.extends.info
     if (config.extends?.servers) oas.servers = config.extends.servers
@@ -518,11 +517,10 @@ export function loadConfig() {
     // if (config.extends?.components?.securitySchemes)
     // 	oas.components.securitySchemes = config.extends.components.securitySchemes
   } catch (err) {
-    if (err.code === 'MODULE_NOT_FOUND') return
+    if (err.code === 'MODULE_NOT_FOUND') return userConfig
     error(`config import failed ${configPath}\n${err.message}`)
   }
-  Object.assign(userConfig, defaultConfig)
-  return defaultConfig
+  return userConfig
 }
 
 export function readSourceFiles() {
