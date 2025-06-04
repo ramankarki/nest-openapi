@@ -111,13 +111,15 @@ export function initState() {
   adminApiTags.length = 0
   Object.assign(
     commonOperationResponse,
-    Object.keys(oas.components.responses).reduce(
-      (obj, status) => ({
-        ...obj,
-        [status]: { $ref: `#/components/responses/${status}` },
-      }),
-      {},
-    ),
+    Object.keys(oas.components.responses)
+      .filter((v) => !v.startsWith('2'))
+      .reduce(
+        (obj, status) => ({
+          ...obj,
+          [status]: { $ref: `#/components/responses/${status}` },
+        }),
+        {},
+      ),
   )
 }
 
@@ -424,29 +426,30 @@ async function generateReqSchema() {
       schema.properties[property]['description'] = desc
     })
   })
-  Object.assign(oas.components.schemas, schemas)
 
   /** inject parameters in all the operations */
   operationReqMeta.map(({ path, httpMethod, clsName, operationId, type }) => {
     /** just for the parameters */
-    if (type === 'body') return
+    if (type === 'body')
+      return (oas.components.schemas[clsName] = schemas[clsName])
 
     /** check if schema exists since class-validator-jsonschema only parses valid dto */
-    if (!oas.components.schemas[clsName])
+    if (!schemas[clsName])
       error(`${clsName} in ${operationId} must be valid class-validator dto`)
 
-    const fields = Object.keys(oas.components.schemas[clsName]['properties'])
+    const fields = Object.keys(schemas[clsName]['properties'])
     fields.forEach((field) => {
       const parameterKey = `${clsName}-${field}`
       oas.paths[path][httpMethod]['parameters'] ||= []
       oas.paths[path][httpMethod]['parameters'].push({
         $ref: `#/components/parameters/${parameterKey}`,
       })
+      oas.components.schemas[parameterKey] = schemas[clsName].properties[field]
       oas.components.parameters[parameterKey] = {
         name: field,
         in: type,
-        required: oas.components.schemas[clsName]['required']?.includes(field),
-        schema: { $ref: `#/components/schemas/${clsName}/properties/${field}` },
+        required: schemas[clsName]['required']?.includes(field),
+        schema: { $ref: `#/components/schemas/${parameterKey}` },
       }
     })
   })
