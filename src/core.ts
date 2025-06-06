@@ -453,14 +453,6 @@ async function generateReqSchema() {
       }
     })
   })
-
-  /** remove param schemas since their properties will be included as schemas */
-  operationReqMeta.map(({ type, clsName }) => {
-    if (type === 'body') return
-
-    const { [clsName]: paramSchema, ...schemas } = oas.components.schemas
-    oas.components.schemas = schemas
-  })
 }
 
 function generateResSchema() {
