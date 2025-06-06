@@ -439,7 +439,7 @@ async function generateReqSchema() {
 
     const paramSchema = schemas[clsName]
     Object.keys(paramSchema.properties).forEach((field) => {
-      const parameterKey = `${clsName}-${field}`
+      const parameterKey = `${type}-${clsName}-${field}`
       oas.paths[path][httpMethod]['parameters'] ||= []
       oas.paths[path][httpMethod]['parameters'].push({
         $ref: `#/components/parameters/${parameterKey}`,
