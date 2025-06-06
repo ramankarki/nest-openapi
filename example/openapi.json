@@ -90,7 +90,7 @@
           "productId": {
             "pattern": "^[0-9a-fA-F]{24}$",
             "type": "string",
-            "example": "8Dd64C7AAeFD63f7fCea9A7E"
+            "example": "d6E7eEe9FcF3FEc5fdaAeE15"
           }
         },
         "type": "object",
@@ -98,12 +98,16 @@
           "productId"
         ],
         "example": {
-          "productId": "E3BC7dAE052C62F7ECA356Ea"
+          "productId": "B7014eB17B4aD3Eeb2d9cbEA"
         }
       },
       "ProductMeta": {
         "properties": {
           "key": {
+            "enum": [
+              "TEST1",
+              "TEST2"
+            ],
             "type": "string"
           },
           "value": {
@@ -116,8 +120,8 @@
           "value"
         ],
         "example": {
-          "key": "et ea non ad",
-          "value": "in commodo ut"
+          "key": "TEST2",
+          "value": "aute fugiat"
         }
       },
       "ProductUpdateDto": {
@@ -143,28 +147,56 @@
           "description"
         ],
         "example": {
-          "name": "aute consectetur irure",
-          "description": "pariatur Lorem",
-          "meta": [
+          "name": "fugiat",
+          "description": "laboris ex minim in veniam"
+        }
+      },
+      "FishMedias": {
+        "properties": {
+          "fileType": {
+            "enum": [
+              "TEST1",
+              "TEST2"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "fileType",
+          "name"
+        ],
+        "example": {
+          "fileType": "TEST1",
+          "name": "nisi cillum"
+        }
+      },
+      "FishMediasDto": {
+        "properties": {
+          "medias": {
+            "items": {
+              "$ref": "#/components/schemas/FishMedias"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object",
+        "required": [
+          "medias"
+        ],
+        "example": {
+          "medias": [
             {
-              "key": "Excepteur aute velit",
-              "value": "pariatur sunt fugiat"
+              "fileType": "TEST1",
+              "name": "ipsum esse do"
             },
             {
-              "key": "laborum sit in",
-              "value": "reprehenderit aliqua dolor in"
-            },
-            {
-              "key": "sed eiusmod magna",
-              "value": "officia magna ad nulla sint"
-            },
-            {
-              "key": "eiusmod Duis sunt minim",
-              "value": "dolore culpa"
-            },
-            {
-              "key": "dolor fugiat in reprehenderit",
-              "value": "eu sunt esse commodo"
+              "fileType": "TEST2",
+              "name": "qui non quis"
             }
           ]
         }
@@ -172,7 +204,7 @@
       "path-ProductIdDto-productId": {
         "pattern": "^[0-9a-fA-F]{24}$",
         "type": "string",
-        "example": "8Dd64C7AAeFD63f7fCea9A7E"
+        "example": "d6E7eEe9FcF3FEc5fdaAeE15"
       },
       "ProductSerializer": {
         "type": "object",
@@ -202,11 +234,11 @@
         ],
         "additionalProperties": false,
         "example": {
-          "id": "do magna",
-          "name": "adipisicing laborum Duis aliqua",
-          "description": "dolor labore sint",
-          "createdAt": "minim enim nulla in incididunt",
-          "updatedAt": "cillum"
+          "id": "minim nulla labore",
+          "name": "consectetur minim",
+          "description": "sed in",
+          "createdAt": "Duis sed cillum anim",
+          "updatedAt": "laboris officia irure consequat"
         }
       }
     }

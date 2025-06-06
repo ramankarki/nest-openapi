@@ -1,14 +1,20 @@
 import { Type } from 'class-transformer'
 import {
+	IsEnum,
 	IsNotEmpty,
 	IsOptional,
 	IsString,
 	ValidateNested,
 } from 'class-validator'
 
+enum ProductMetaKeys {
+	TEST1 = 'TEST1',
+	TEST2 = 'TEST2',
+}
+
 class ProductMeta {
-	@IsString()
-	key: string
+	@IsEnum(ProductMetaKeys)
+	key: keyof typeof ProductMetaKeys
 
 	@IsString()
 	value: string

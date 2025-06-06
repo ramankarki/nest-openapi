@@ -18,7 +18,6 @@ import type { Config, HttpMethod, OperationMeta } from './types'
 import { error } from './error'
 import { JSONSchemaFaker } from 'json-schema-faker'
 import { faker } from '@faker-js/faker'
-import { getMetadataStorage as classValidatorMetadataStorage } from 'class-validator'
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema'
 const { defaultMetadataStorage } = require('class-transformer/cjs/storage')
 import {
@@ -30,6 +29,15 @@ import {
 } from 'ts-json-schema-generator'
 
 /** extend json faker */
+JSONSchemaFaker.option({
+  requiredOnly: false,
+  alwaysFakeOptionals: true,
+  failOnInvalidFormat: false,
+  useExamplesValue: true,
+  useDefaultValue: true,
+  minItems: 2,
+  maxItems: 2,
+})
 JSONSchemaFaker.extend('faker', () => faker)
 JSONSchemaFaker.format('url', () => faker.internet.url())
 JSONSchemaFaker.format('credit-card', () => faker.finance.creditCardNumber())
@@ -414,7 +422,6 @@ async function generateReqSchema() {
   )
 
   const schemas = validationMetadatasToSchemas({
-    classValidatorMetadataStorage: classValidatorMetadataStorage(),
     classTransformerMetadataStorage: defaultMetadataStorage,
     refPointerPrefix: '#/components/schemas/',
   }) as Record<string, OpenAPIV3.SchemaObject>
