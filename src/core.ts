@@ -434,13 +434,11 @@ async function generateReqSchema() {
     if (type === 'body') return
 
     /** check if schema exists since class-validator-jsonschema only parses valid dto */
-    if (!oas.components.schemas[clsName])
+    if (!schemas[clsName])
       error(`${clsName} in ${operationId} must be valid class-validator dto`)
 
-    const { [clsName]: paramSchema, ...schemas } = oas.components.schemas
-    oas.components.schemas = schemas
-
-    Object.keys(paramSchema['properties']).forEach((field) => {
+    const paramSchema = schemas[clsName]
+    Object.keys(paramSchema.properties).forEach((field) => {
       const parameterKey = `${clsName}-${field}`
       oas.paths[path][httpMethod]['parameters'] ||= []
       oas.paths[path][httpMethod]['parameters'].push({
@@ -454,6 +452,14 @@ async function generateReqSchema() {
         schema: { $ref: `#/components/schemas/${parameterKey}` },
       }
     })
+  })
+
+  /** remove param schemas since their properties will be included as schemas */
+  operationReqMeta.map(({ type, clsName }) => {
+    if (type === 'body') return
+
+    const { [clsName]: paramSchema, ...schemas } = oas.components.schemas
+    oas.components.schemas = schemas
   })
 }
 
