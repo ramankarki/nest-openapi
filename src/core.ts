@@ -426,29 +426,31 @@ async function generateReqSchema() {
       schema.properties[property]['description'] = desc
     })
   })
+  Object.assign(oas.components.schemas, schemas)
 
   /** inject parameters in all the operations */
   operationReqMeta.map(({ path, httpMethod, clsName, operationId, type }) => {
     /** just for the parameters */
-    if (type === 'body')
-      return (oas.components.schemas[clsName] = schemas[clsName])
+    if (type === 'body') return
 
     /** check if schema exists since class-validator-jsonschema only parses valid dto */
-    if (!schemas[clsName])
+    if (!oas.components.schemas[clsName])
       error(`${clsName} in ${operationId} must be valid class-validator dto`)
 
-    const fields = Object.keys(schemas[clsName]['properties'])
-    fields.forEach((field) => {
+    const { [clsName]: paramSchema, ...schemas } = oas.components.schemas
+    oas.components.schemas = schemas
+
+    Object.keys(paramSchema['properties']).forEach((field) => {
       const parameterKey = `${clsName}-${field}`
       oas.paths[path][httpMethod]['parameters'] ||= []
       oas.paths[path][httpMethod]['parameters'].push({
         $ref: `#/components/parameters/${parameterKey}`,
       })
-      oas.components.schemas[parameterKey] = schemas[clsName].properties[field]
+      oas.components.schemas[parameterKey] = paramSchema['properties'][field]
       oas.components.parameters[parameterKey] = {
         name: field,
         in: type,
-        required: schemas[clsName]['required']?.includes(field),
+        required: paramSchema['required']?.includes(field),
         schema: { $ref: `#/components/schemas/${parameterKey}` },
       }
     })

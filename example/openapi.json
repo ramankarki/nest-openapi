@@ -1,0 +1,178 @@
+{
+	"openapi": "3.1.0",
+	"info": {
+		"title": "example",
+		"version": "0.0.1",
+		"license": {
+			"name": "UNLICENSED",
+			"url": "UNLICENSED"
+		}
+	},
+	"servers": [{ "url": "https://abc.com" }],
+	"paths": {
+		"/products/{productId}": {
+			"patch": {
+				"operationId": "ProductController-updateProduct",
+				"summary": "UpdateProduct",
+				"description": "",
+				"tags": ["Products"],
+				"responses": {
+					"200": {
+						"$ref": "#/components/responses/ProductSerializer"
+					},
+					"400": {
+						"$ref": "#/components/responses/400"
+					},
+					"500": {
+						"$ref": "#/components/responses/500"
+					}
+				},
+				"security": [],
+				"requestBody": {
+					"$ref": "#/components/requestBodies/ProductUpdateDto"
+				},
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/ProductIdDto-productId"
+					}
+				]
+			}
+		}
+	},
+	"components": {
+		"parameters": {
+			"ProductIdDto-productId": {
+				"name": "productId",
+				"in": "path",
+				"required": true,
+				"schema": {
+					"$ref": "#/components/schemas/ProductIdDto-productId"
+				}
+			}
+		},
+		"requestBodies": {
+			"ProductUpdateDto": {
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ProductUpdateDto"
+						}
+					}
+				}
+			}
+		},
+		"responses": {
+			"204": {
+				"description": "The response body is empty"
+			},
+			"400": {
+				"description": "Bad request"
+			},
+			"500": {
+				"description": "Internal server error"
+			},
+			"ProductSerializer": {
+				"description": "Success",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ProductSerializer"
+						}
+					}
+				}
+			}
+		},
+		"schemas": {
+			"ProductMeta": {
+				"properties": {
+					"key": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"required": ["key", "value"],
+				"example": {
+					"key": "consequat deserunt ut",
+					"value": "sed incididunt"
+				}
+			},
+			"ProductUpdateDto": {
+				"properties": {
+					"name": {
+						"type": "string",
+						"minLength": 1
+					},
+					"description": {
+						"type": "string",
+						"minLength": 1
+					},
+					"meta": {
+						"items": {
+							"$ref": "#/components/schemas/ProductMeta"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"required": ["name", "description", "meta"],
+				"example": {
+					"name": "ullamco quis cillum ex laborum",
+					"description": "nostrud qui",
+					"meta": [
+						{
+							"key": "cillum dolore exercitation id sed",
+							"value": "in"
+						},
+						{
+							"key": "in aliquip sint dolore",
+							"value": "est"
+						}
+					]
+				}
+			},
+			"ProductIdDto-productId": {
+				"pattern": "^[0-9a-fA-F]{24}$",
+				"type": "string",
+				"example": "AA9254Cdb0B92aCBd5DDa0ca"
+			},
+			"ProductSerializer": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string"
+					}
+				},
+				"required": ["id", "name", "description", "createdAt", "updatedAt"],
+				"additionalProperties": false,
+				"example": {
+					"id": "dolore",
+					"name": "commodo ut mollit veniam",
+					"description": "ea anim",
+					"createdAt": "in",
+					"updatedAt": "commodo dolor aliquip"
+				}
+			}
+		}
+	},
+	"tags": [
+		{
+			"name": "Products",
+			"description": "Contains Products APIs."
+		}
+	]
+}

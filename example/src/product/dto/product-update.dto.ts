@@ -1,4 +1,13 @@
-import { IsNotEmpty, IsString } from 'class-validator'
+import { Type } from 'class-transformer'
+import { IsNotEmpty, IsString, ValidateNested } from 'class-validator'
+
+class ProductMeta {
+	@IsString()
+	key: string
+
+	@IsString()
+	value: string
+}
 
 export class ProductUpdateDto {
 	@IsNotEmpty()
@@ -8,4 +17,8 @@ export class ProductUpdateDto {
 	@IsNotEmpty()
 	@IsString()
 	description: string
+
+	@ValidateNested({ each: true })
+	@Type(() => ProductMeta)
+	meta: ProductMeta[]
 }
