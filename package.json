@@ -1,7 +1,7 @@
 {
   "name": "nest-openapi",
   "author": "Raman Karki",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Auto generate openapi spec from nest.js codebase with single command",
   "packageManager": "pnpm@9.15.0",
   "keywords": [
