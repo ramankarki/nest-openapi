@@ -69,7 +69,7 @@ const commonOperationResponse: OpenAPIV3.ResponsesObject = {}
 export function initState() {
   clsMap.clear()
   Object.assign(oas, {
-    openapi: '3.1.0',
+    openapi: '3.0.0',
     info: {
       title: pkg.name,
       version: pkg.version,
