@@ -16,8 +16,6 @@ import { join, resolve } from 'path'
 import { register } from 'esbuild-register/dist/node'
 import type { Config, HttpMethod, OperationMeta } from './types'
 import { error } from './error'
-import { JSONSchemaFaker } from 'json-schema-faker'
-import { faker } from '@faker-js/faker'
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema'
 const { defaultMetadataStorage } = require('class-transformer/cjs/storage')
 import {
@@ -27,20 +25,7 @@ import {
   DEFAULT_CONFIG,
   CompletedConfig,
 } from 'ts-json-schema-generator'
-
-/** extend json faker */
-JSONSchemaFaker.option({
-  requiredOnly: false,
-  alwaysFakeOptionals: true,
-  failOnInvalidFormat: false,
-  useExamplesValue: true,
-  useDefaultValue: true,
-  minItems: 2,
-  maxItems: 2,
-})
-JSONSchemaFaker.extend('faker', () => faker)
-JSONSchemaFaker.format('url', () => faker.internet.url())
-JSONSchemaFaker.format('credit-card', () => faker.finance.creditCardNumber())
+import { sample } from 'openapi-sampler'
 
 /** initialize utils */
 register({ extensions: ['.ts'] })
@@ -492,11 +477,9 @@ function generateResSchema() {
 }
 
 async function injectExample() {
-  const examples = await JSONSchemaFaker.resolve({
-    components: { schemas: structuredClone(oas.components.schemas) },
-  })
-  Object.entries(examples.components.schemas).forEach(([k, example]) => {
-    Object.assign(oas.components.schemas[k], { example })
+  Object.entries(oas.components.schemas).forEach(([key, schema]) => {
+    const example = sample(schema as any, {}, oas)
+    Object.assign(oas.components.schemas[key], { example })
   })
 }
 
