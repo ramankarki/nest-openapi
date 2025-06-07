@@ -409,7 +409,7 @@ async function generateReqSchema() {
   const schemas = validationMetadatasToSchemas({
     classTransformerMetadataStorage: defaultMetadataStorage,
     refPointerPrefix: '#/components/schemas/',
-  }) as Record<string, OpenAPIV3.SchemaObject>
+  })
 
   /** extract @-description manually since class-validator-jsonschema doesn't handle */
   Object.entries(schemas).forEach(([key, schema]) => {
@@ -526,6 +526,13 @@ export function updateSourceFiles(path: string) {
   else project.addSourceFileAtPath(path)
 }
 
+function downgradeToV30() {
+  const replacedOas = JSON.stringify(oas)
+    .replace(/"exclusiveMinimum":/g, '"minimum":')
+    .replace(/"exclusiveMaximum":/g, '"maximum":')
+  Object.assign(oas, JSON.parse(replacedOas))
+}
+
 export async function generateOAS() {
   collectCls()
   extractOasMetadata()
@@ -533,5 +540,6 @@ export async function generateOAS() {
   await generateReqSchema()
   generateResSchema()
 
+  downgradeToV30()
   await injectExample()
 }
